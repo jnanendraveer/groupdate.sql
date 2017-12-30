@@ -1,5 +1,14 @@
 BEGIN;
 
+-- gdtz
+
+CREATE OR REPLACE FUNCTION gdtz()
+  RETURNS text AS
+$$
+  SELECT 'America/Los_Angeles';
+$$
+  LANGUAGE SQL IMMUTABLE;
+
 -- gday
 
 CREATE OR REPLACE FUNCTION gday(date)
@@ -37,7 +46,7 @@ $$
 CREATE OR REPLACE FUNCTION gday(timestamptz)
   RETURNS date AS
 $$
-  SELECT gday($1, 'America/Los_Angeles');
+  SELECT gday($1, gdtz());
 $$
   LANGUAGE SQL STABLE;
 
@@ -45,7 +54,7 @@ $$
 CREATE OR REPLACE FUNCTION gday(timestamp)
   RETURNS date AS
 $$
-  SELECT gday($1::timestamptz, 'America/Los_Angeles');
+  SELECT gday($1::timestamptz, gdtz());
 $$
   LANGUAGE SQL STABLE;
 
@@ -87,7 +96,7 @@ $$
 CREATE OR REPLACE FUNCTION gweek(timestamptz)
   RETURNS date AS
 $$
-  SELECT gweek($1, 'America/Los_Angeles');
+  SELECT gweek($1, gdtz());
 $$
   LANGUAGE SQL STABLE;
 
@@ -95,7 +104,7 @@ $$
 CREATE OR REPLACE FUNCTION gweek(timestamp)
   RETURNS date AS
 $$
-  SELECT gweek($1::timestamptz, 'America/Los_Angeles');
+  SELECT gweek($1::timestamptz, gdtz());
 $$
   LANGUAGE SQL STABLE;
 
@@ -137,7 +146,7 @@ $$
 CREATE OR REPLACE FUNCTION gmonth(timestamptz)
   RETURNS date AS
 $$
-  SELECT gmonth($1, 'America/Los_Angeles');
+  SELECT gmonth($1, gdtz());
 $$
   LANGUAGE SQL STABLE;
 
@@ -145,7 +154,7 @@ $$
 CREATE OR REPLACE FUNCTION gmonth(timestamp)
   RETURNS date AS
 $$
-  SELECT gmonth($1::timestamptz, 'America/Los_Angeles');
+  SELECT gmonth($1::timestamptz, gdtz());
 $$
   LANGUAGE SQL STABLE;
 
