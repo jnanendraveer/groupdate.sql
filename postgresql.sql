@@ -185,56 +185,6 @@ $$
   LANGUAGE SQL STABLE;
 
 
--- week starting monday
-
-CREATE OR REPLACE FUNCTION gd_week_mon(date)
-  RETURNS date AS
-$$
-  SELECT DATE_TRUNC('week', $1)::date;
-$$
-  LANGUAGE SQL STABLE;
-
-
-CREATE OR REPLACE FUNCTION gd_week_mon(date, text)
-  RETURNS date AS
-$$
-  SELECT gd_week_mon($1);
-$$
-  LANGUAGE SQL STABLE;
-
-
-CREATE OR REPLACE FUNCTION gd_week_mon(timestamptz, text)
-  RETURNS date AS
-$$
-  SELECT DATE_TRUNC('week', $1 AT TIME ZONE $2)::date;
-$$
-  LANGUAGE SQL STABLE;
-
-
-CREATE OR REPLACE FUNCTION gd_week_mon(timestamp, text)
-  RETURNS date AS
-$$
-  SELECT gd_week_mon($1::timestamptz, $2);
-$$
-  LANGUAGE SQL STABLE;
-
-
-CREATE OR REPLACE FUNCTION gd_week_mon(timestamptz)
-  RETURNS date AS
-$$
-  SELECT gd_week_mon($1, gd_time_zone());
-$$
-  LANGUAGE SQL STABLE;
-
-
-CREATE OR REPLACE FUNCTION gd_week_mon(timestamp)
-  RETURNS date AS
-$$
-  SELECT gd_week_mon($1::timestamptz, gd_time_zone());
-$$
-  LANGUAGE SQL STABLE;
-
-
 -- month
 
 CREATE OR REPLACE FUNCTION gd_month(date)
