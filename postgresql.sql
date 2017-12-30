@@ -351,7 +351,6 @@ $$
   LANGUAGE SQL STABLE;
 
 
-
 -- period
 
 CREATE OR REPLACE FUNCTION gd_period(text, timestamp)
