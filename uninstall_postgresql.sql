@@ -24,10 +24,10 @@ DROP FUNCTION IF EXISTS gd_week(timestamp);
 DROP FUNCTION IF EXISTS gd_week(timestamptz, text);
 DROP FUNCTION IF EXISTS gd_week(timestamp, text);
 
-DROP FUNCTION IF EXISTS gd_week_mon(timestamptz);
-DROP FUNCTION IF EXISTS gd_week_mon(timestamp);
-DROP FUNCTION IF EXISTS gd_week_mon(timestamptz, text);
-DROP FUNCTION IF EXISTS gd_week_mon(timestamp, text);
+-- DROP FUNCTION IF EXISTS gd_week_mon(timestamptz);
+-- DROP FUNCTION IF EXISTS gd_week_mon(timestamp);
+-- DROP FUNCTION IF EXISTS gd_week_mon(timestamptz, text);
+-- DROP FUNCTION IF EXISTS gd_week_mon(timestamp, text);
 
 DROP FUNCTION IF EXISTS gd_month(timestamptz);
 DROP FUNCTION IF EXISTS gd_month(timestamp);

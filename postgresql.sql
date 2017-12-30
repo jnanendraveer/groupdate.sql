@@ -121,7 +121,7 @@ $$
 CREATE OR REPLACE FUNCTION gd_day(timestamptz)
   RETURNS date AS
 $$
-  SELECT gday($1, gd_time_zone());
+  SELECT gd_day($1, gd_time_zone());
 $$
   LANGUAGE SQL STABLE;
 
@@ -135,7 +135,6 @@ $$
 
 
 -- week
-
 
 CREATE OR REPLACE FUNCTION gd_week(date)
   RETURNS date AS
@@ -303,8 +302,6 @@ $$
   LANGUAGE SQL STABLE;
 
 
--- hour of day w/ time zone
-
 CREATE OR REPLACE FUNCTION gd_hour_of_day(timestamptz, text)
   RETURNS integer AS
 $$
@@ -339,8 +336,6 @@ $$
   LANGUAGE SQL STABLE;
 
 
--- day of week w/ time zone
-
 CREATE OR REPLACE FUNCTION gd_day_of_week(timestamptz, text)
   RETURNS integer AS
 $$
@@ -355,5 +350,122 @@ $$
   SELECT gd_day_of_week($1::timestamptz, $2);
 $$
   LANGUAGE SQL STABLE;
+
+
+-- period
+
+CREATE OR REPLACE FUNCTION gd_period(text, timestamp)
+  RETURNS date AS
+$$
+  SELECT CASE
+  WHEN $1 = 'day' THEN
+    gd_day($2)
+  WHEN $1 = 'week' THEN
+    gd_week($2)
+  WHEN $1 = 'month' THEN
+    gd_month($2)
+  WHEN $1 = 'year' THEN
+    gd_year($2)
+  ELSE
+    NULL
+  END;
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_period(text, timestamptz)
+  RETURNS date AS
+$$
+  SELECT CASE
+  WHEN $1 = 'day' THEN
+    gd_day($2)
+  WHEN $1 = 'week' THEN
+    gd_week($2)
+  WHEN $1 = 'month' THEN
+    gd_month($2)
+  WHEN $1 = 'year' THEN
+    gd_year($2)
+  ELSE
+    NULL
+  END;
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_period(text, date)
+  RETURNS date AS
+$$
+  SELECT CASE
+  WHEN $1 = 'day' THEN
+    gd_day($2)
+  WHEN $1 = 'week' THEN
+    gd_week($2)
+  WHEN $1 = 'month' THEN
+    gd_month($2)
+  WHEN $1 = 'year' THEN
+    gd_year($2)
+  ELSE
+    NULL
+  END;
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_period(text, timestamp, text)
+  RETURNS date AS
+$$
+  SELECT CASE
+  WHEN $1 = 'day' THEN
+    gd_day($2, $3)
+  WHEN $1 = 'week' THEN
+    gd_week($2, $3)
+  WHEN $1 = 'month' THEN
+    gd_month($2, $3)
+  WHEN $1 = 'year' THEN
+    gd_year($2, $3)
+  ELSE
+    NULL
+  END;
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_period(text, timestamptz, text)
+  RETURNS date AS
+$$
+  SELECT CASE
+  WHEN $1 = 'day' THEN
+    gd_day($2, $3)
+  WHEN $1 = 'week' THEN
+    gd_week($2, $3)
+  WHEN $1 = 'month' THEN
+    gd_month($2, $3)
+  WHEN $1 = 'year' THEN
+    gd_year($2, $3)
+  ELSE
+    NULL
+  END;
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_period(text, date, text)
+  RETURNS date AS
+$$
+  SELECT CASE
+  WHEN $1 = 'day' THEN
+    gd_day($2, $3)
+  WHEN $1 = 'week' THEN
+    gd_week($2, $3)
+  WHEN $1 = 'month' THEN
+    gd_month($2, $3)
+  WHEN $1 = 'year' THEN
+    gd_year($2, $3)
+  ELSE
+    NULL
+  END;
+$$
+  LANGUAGE SQL STABLE;
+
 
 COMMIT;

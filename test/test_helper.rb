@@ -247,8 +247,8 @@ module TestGroupdate
     expected = Date.parse(expected)
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::date)"
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::date, 'America/Los_Angeles')"
-    # assert_sql expected, "SELECT gperiod('#{function}', '#{time_str}'::date)"
-    # assert_sql expected, "SELECT gperiod('#{function}', '#{time_str}'::date, 'America/Los_Angeles')"
+    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::date)"
+    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::date, 'America/Los_Angeles')"
   end
 
   def assert_time(function, expected, time_str)
@@ -257,18 +257,18 @@ module TestGroupdate
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamptz)"
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamp, 'America/Los_Angeles')"
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamptz, 'America/Los_Angeles')"
-    # assert_sql expected, "SELECT gperiod('#{function}', '#{time_str}'::timestamp)"
-    # assert_sql expected, "SELECT gperiod('#{function}', '#{time_str}'::timestamptz)"
-    # assert_sql expected, "SELECT gperiod('#{function}', '#{time_str}'::timestamp, 'America/Los_Angeles')"
-    # assert_sql expected, "SELECT gperiod('#{function}', '#{time_str}'::timestamptz, 'America/Los_Angeles')"
+    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamp)"
+    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamptz)"
+    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamp, 'America/Los_Angeles')"
+    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamptz, 'America/Los_Angeles')"
   end
 
   def assert_time_utc(function, expected, time_str)
     expected = Date.parse(expected)
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamp, 'Etc/UTC')"
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamptz, 'Etc/UTC')"
-    # assert_sql expected, "SELECT gperiod('#{function}', '#{time_str}'::timestamp, 'Etc/UTC')"
-    # assert_sql expected, "SELECT gperiod('#{function}', '#{time_str}'::timestamptz, 'Etc/UTC')"
+    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamp, 'Etc/UTC')"
+    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamptz, 'Etc/UTC')"
   end
 
   def assert_sql(expected, sql)
