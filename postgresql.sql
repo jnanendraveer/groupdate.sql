@@ -7,7 +7,28 @@ CREATE OR REPLACE FUNCTION gd_version()
 $$
   SELECT '1.0.0'::text;
 $$
-  LANGUAGE SQL;
+  LANGUAGE SQL IMMUTABLE;
+
+
+-- default time zone
+
+CREATE OR REPLACE FUNCTION gd_time_zone()
+  RETURNS text AS
+$$
+  SELECT 'Etc/UTC';
+$$
+  LANGUAGE SQL IMMUTABLE;
+
+
+-- week start
+
+CREATE OR REPLACE FUNCTION gd_week_start()
+  RETURNS int AS
+$$
+  SELECT 1;
+$$
+  LANGUAGE SQL IMMUTABLE;
+
 
 -- second
 
@@ -65,180 +86,251 @@ $$
 
 -- day
 
-CREATE OR REPLACE FUNCTION gd_day(timestamptz)
-  RETURNS timestamptz AS
+CREATE OR REPLACE FUNCTION gd_day(date)
+  RETURNS date AS
 $$
-  SELECT DATE_TRUNC('day', $1)::timestamptz;
-$$
-  LANGUAGE SQL STABLE;
-
-
-CREATE OR REPLACE FUNCTION gd_day(timestamp)
-  RETURNS timestamptz AS
-$$
-  SELECT gd_day($1::timestamptz);
+  SELECT $1;
 $$
   LANGUAGE SQL STABLE;
 
 
--- day w/ time zone
+CREATE OR REPLACE FUNCTION gd_day(date, text)
+  RETURNS date AS
+$$
+  SELECT gd_day($1);
+$$
+  LANGUAGE SQL STABLE;
+
 
 CREATE OR REPLACE FUNCTION gd_day(timestamptz, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
-  SELECT DATE_TRUNC('day', $1 AT TIME ZONE $2) AT TIME ZONE $2;
+  SELECT DATE_TRUNC('day', $1 AT TIME ZONE $2)::date;
 $$
   LANGUAGE SQL STABLE;
 
 
 CREATE OR REPLACE FUNCTION gd_day(timestamp, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
   SELECT gd_day($1::timestamptz, $2);
 $$
   LANGUAGE SQL STABLE;
 
 
+CREATE OR REPLACE FUNCTION gd_day(timestamptz)
+  RETURNS date AS
+$$
+  SELECT gday($1, gd_time_zone());
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_day(timestamp)
+  RETURNS date AS
+$$
+  SELECT gd_day($1::timestamptz, gd_time_zone());
+$$
+  LANGUAGE SQL STABLE;
+
+
 -- week
 
-CREATE OR REPLACE FUNCTION gd_week(timestamptz)
-  RETURNS timestamptz AS
-$$
-  SELECT DATE_TRUNC('week', ($1 + INTERVAL '1 day')) - INTERVAL '1 day';
-$$
-  LANGUAGE SQL STABLE;
 
-
-CREATE OR REPLACE FUNCTION gd_week(timestamp)
-  RETURNS timestamptz AS
+CREATE OR REPLACE FUNCTION gd_week(date)
+  RETURNS date AS
 $$
-  SELECT gd_week($1::timestamptz);
+  SELECT (DATE_TRUNC('week', $1 + (gd_week_start() || ' day')::interval) - (gd_week_start() || ' day')::interval)::date;
 $$
   LANGUAGE SQL STABLE;
 
 
--- week w/ time zone
+CREATE OR REPLACE FUNCTION gd_week(date, text)
+  RETURNS date AS
+$$
+  SELECT gd_week($1);
+$$
+  LANGUAGE SQL STABLE;
+
 
 CREATE OR REPLACE FUNCTION gd_week(timestamptz, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
-  SELECT (DATE_TRUNC('week', ($1 + INTERVAL '1 day') AT TIME ZONE $2) - INTERVAL '1 day') AT TIME ZONE $2;
+  SELECT (DATE_TRUNC('week', ($1 + (gd_week_start() || ' day')::interval) AT TIME ZONE $2) - (gd_week_start() || ' day')::interval)::date;
 $$
   LANGUAGE SQL STABLE;
 
 
 CREATE OR REPLACE FUNCTION gd_week(timestamp, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
   SELECT gd_week($1::timestamptz, $2);
 $$
   LANGUAGE SQL STABLE;
 
 
+CREATE OR REPLACE FUNCTION gd_week(timestamptz)
+  RETURNS date AS
+$$
+  SELECT gd_week($1, gd_time_zone());
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_week(timestamp)
+  RETURNS date AS
+$$
+  SELECT gd_week($1::timestamptz, gd_time_zone());
+$$
+  LANGUAGE SQL STABLE;
+
+
 -- week starting monday
 
-CREATE OR REPLACE FUNCTION gd_week_mon(timestamptz)
-  RETURNS timestamptz AS
+CREATE OR REPLACE FUNCTION gd_week_mon(date)
+  RETURNS date AS
 $$
-  SELECT DATE_TRUNC('week', $1);
-$$
-  LANGUAGE SQL STABLE;
-
-
-CREATE OR REPLACE FUNCTION gd_week_mon(timestamp)
-  RETURNS timestamptz AS
-$$
-  SELECT gd_week_mon($1::timestamptz);
+  SELECT DATE_TRUNC('week', $1)::date;
 $$
   LANGUAGE SQL STABLE;
 
 
--- week w/ time zone starting monday
+CREATE OR REPLACE FUNCTION gd_week_mon(date, text)
+  RETURNS date AS
+$$
+  SELECT gd_week_mon($1);
+$$
+  LANGUAGE SQL STABLE;
+
 
 CREATE OR REPLACE FUNCTION gd_week_mon(timestamptz, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
-  SELECT DATE_TRUNC('week', $1 AT TIME ZONE $2) AT TIME ZONE $2;
+  SELECT DATE_TRUNC('week', $1 AT TIME ZONE $2)::date;
 $$
   LANGUAGE SQL STABLE;
 
 
 CREATE OR REPLACE FUNCTION gd_week_mon(timestamp, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
   SELECT gd_week_mon($1::timestamptz, $2);
 $$
   LANGUAGE SQL STABLE;
 
 
+CREATE OR REPLACE FUNCTION gd_week_mon(timestamptz)
+  RETURNS date AS
+$$
+  SELECT gd_week_mon($1, gd_time_zone());
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_week_mon(timestamp)
+  RETURNS date AS
+$$
+  SELECT gd_week_mon($1::timestamptz, gd_time_zone());
+$$
+  LANGUAGE SQL STABLE;
+
+
 -- month
 
-CREATE OR REPLACE FUNCTION gd_month(timestamptz)
-  RETURNS timestamptz AS
+CREATE OR REPLACE FUNCTION gd_month(date)
+  RETURNS date AS
 $$
-  SELECT DATE_TRUNC('month', $1)::timestamptz;
-$$
-  LANGUAGE SQL STABLE;
-
-
-CREATE OR REPLACE FUNCTION gd_month(timestamp)
-  RETURNS timestamptz AS
-$$
-  SELECT gd_month($1::timestamptz);
+  SELECT DATE_TRUNC('month', $1)::date;
 $$
   LANGUAGE SQL STABLE;
 
 
--- month w/ time zone
+CREATE OR REPLACE FUNCTION gd_month(date, text)
+  RETURNS date AS
+$$
+  SELECT gd_month($1);
+$$
+  LANGUAGE SQL STABLE;
+
 
 CREATE OR REPLACE FUNCTION gd_month(timestamptz, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
-  SELECT DATE_TRUNC('month', $1 AT TIME ZONE $2) AT TIME ZONE $2;
+  SELECT DATE_TRUNC('month', $1 AT TIME ZONE $2)::date;
 $$
   LANGUAGE SQL STABLE;
 
 
 CREATE OR REPLACE FUNCTION gd_month(timestamp, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
   SELECT gd_month($1::timestamptz, $2);
 $$
   LANGUAGE SQL STABLE;
 
 
+CREATE OR REPLACE FUNCTION gd_month(timestamptz)
+  RETURNS date AS
+$$
+  SELECT gd_month($1, gd_time_zone());
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_month(timestamp)
+  RETURNS date AS
+$$
+  SELECT gd_month($1::timestamptz, gd_time_zone());
+$$
+  LANGUAGE SQL STABLE;
+
+
 -- year
 
-CREATE OR REPLACE FUNCTION gd_year(timestamptz)
-  RETURNS timestamptz AS
+CREATE OR REPLACE FUNCTION gd_year(date)
+  RETURNS date AS
 $$
-  SELECT DATE_TRUNC('year', $1)::timestamptz;
-$$
-  LANGUAGE SQL STABLE;
-
-
-CREATE OR REPLACE FUNCTION gd_year(timestamp)
-  RETURNS timestamptz AS
-$$
-  SELECT gd_year($1::timestamptz);
+  SELECT DATE_TRUNC('year', $1)::date;
 $$
   LANGUAGE SQL STABLE;
 
 
--- year w/ time zone
+CREATE OR REPLACE FUNCTION gd_year(date, text)
+  RETURNS date AS
+$$
+  SELECT gd_year($1);
+$$
+  LANGUAGE SQL STABLE;
+
 
 CREATE OR REPLACE FUNCTION gd_year(timestamptz, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
-  SELECT DATE_TRUNC('year', $1 AT TIME ZONE $2) AT TIME ZONE $2;
+  SELECT DATE_TRUNC('year', $1 AT TIME ZONE $2)::date;
 $$
   LANGUAGE SQL STABLE;
 
 
 CREATE OR REPLACE FUNCTION gd_year(timestamp, text)
-  RETURNS timestamptz AS
+  RETURNS date AS
 $$
   SELECT gd_year($1::timestamptz, $2);
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_year(timestamptz)
+  RETURNS date AS
+$$
+  SELECT gd_year($1, gd_time_zone());
+$$
+  LANGUAGE SQL STABLE;
+
+
+CREATE OR REPLACE FUNCTION gd_year(timestamp)
+  RETURNS date AS
+$$
+  SELECT gd_year($1::timestamptz, gd_time_zone());
 $$
   LANGUAGE SQL STABLE;
 

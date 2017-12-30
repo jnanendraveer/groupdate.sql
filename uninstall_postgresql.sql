@@ -1,6 +1,7 @@
 BEGIN;
 
 DROP FUNCTION IF EXISTS gd_version();
+DROP FUNCTION IF EXISTS gd_time_zone();
 
 DROP FUNCTION IF EXISTS gd_second(timestamptz);
 DROP FUNCTION IF EXISTS gd_second(timestamp);
@@ -11,15 +12,22 @@ DROP FUNCTION IF EXISTS gd_minute(timestamp);
 DROP FUNCTION IF EXISTS gd_hour(timestamptz);
 DROP FUNCTION IF EXISTS gd_hour(timestamp);
 
-DROP FUNCTION IF EXISTS gd_day(timestamptz);
-DROP FUNCTION IF EXISTS gd_day(timestamp);
+DROP FUNCTION IF EXISTS gd_day(date);
+DROP FUNCTION IF EXISTS gd_day(date, text);
 DROP FUNCTION IF EXISTS gd_day(timestamptz, text);
 DROP FUNCTION IF EXISTS gd_day(timestamp, text);
+DROP FUNCTION IF EXISTS gd_day(timestamptz);
+DROP FUNCTION IF EXISTS gd_day(timestamp);
 
 DROP FUNCTION IF EXISTS gd_week(timestamptz);
 DROP FUNCTION IF EXISTS gd_week(timestamp);
 DROP FUNCTION IF EXISTS gd_week(timestamptz, text);
 DROP FUNCTION IF EXISTS gd_week(timestamp, text);
+
+DROP FUNCTION IF EXISTS gd_week_mon(timestamptz);
+DROP FUNCTION IF EXISTS gd_week_mon(timestamp);
+DROP FUNCTION IF EXISTS gd_week_mon(timestamptz, text);
+DROP FUNCTION IF EXISTS gd_week_mon(timestamp, text);
 
 DROP FUNCTION IF EXISTS gd_month(timestamptz);
 DROP FUNCTION IF EXISTS gd_month(timestamp);
