@@ -139,37 +139,37 @@ module TestGroupdate
   # hour of day
 
   def test_gd_hour_of_day_end_of_hour
-    assert_result :gd_hour_of_day, 0, "2013-01-01 00:59:59"
+    assert_time_utc :hour_of_day, 0, "2013-01-01 00:59:59", false
   end
 
   def test_gd_hour_of_day_start_of_hour
-    assert_result :gd_hour_of_day, 1, "2013-01-01 01:00:00"
+    assert_time_utc :hour_of_day, 1, "2013-01-01 01:00:00", false
   end
 
   def test_gd_hour_of_day_end_of_hour_with_time_zone
-    assert_result :gd_hour_of_day, 0, "2013-01-01 08:59:59", true
+    assert_time :hour_of_day, 0, "2013-01-01 08:59:59", false
   end
 
   def test_gd_hour_of_day_start_of_hour_with_time_zone
-    assert_result :gd_hour_of_day, 1, "2013-01-01 09:00:00", true
+    assert_time :hour_of_day, 1, "2013-01-01 09:00:00", false
   end
 
   # day of week
 
   def test_gd_day_of_week_end_of_day
-    assert_result :gd_day_of_week, 2, "2013-01-01 23:59:59"
+    assert_time_utc :day_of_week, 2, "2013-01-01 23:59:59", false
   end
 
   def test_gd_day_of_week_start_of_day
-    assert_result :gd_day_of_week, 3, "2013-01-02 00:00:00"
+    assert_time_utc :day_of_week, 3, "2013-01-02 00:00:00", false
   end
 
   def test_gd_day_of_week_end_of_week_with_time_zone
-    assert_result :gd_day_of_week, 2, "2013-01-02 07:59:59", true
+    assert_time :day_of_week, 2, "2013-01-02 07:59:59", false
   end
 
   def test_gd_day_of_week_start_of_week_with_time_zone
-    assert_result :gd_day_of_week, 3, "2013-01-02 08:00:00", true
+    assert_time :day_of_week, 3, "2013-01-02 08:00:00", false
   end
 
   # helpers
@@ -186,24 +186,28 @@ module TestGroupdate
     assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::date, 'America/Los_Angeles')"
   end
 
-  def assert_time(function, expected, time_str)
-    expected = Date.parse(expected)
+  def assert_time(function, expected, time_str, period = true)
+    expected = Date.parse(expected) if expected.is_a?(String)
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamp)"
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamptz)"
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamp, 'America/Los_Angeles')"
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamptz, 'America/Los_Angeles')"
-    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamp)"
-    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamptz)"
-    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamp, 'America/Los_Angeles')"
-    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamptz, 'America/Los_Angeles')"
+    if period
+      assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamp)"
+      assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamptz)"
+      assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamp, 'America/Los_Angeles')"
+      assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamptz, 'America/Los_Angeles')"
+    end
   end
 
-  def assert_time_utc(function, expected, time_str)
-    expected = Date.parse(expected)
+  def assert_time_utc(function, expected, time_str, period = true)
+    expected = Date.parse(expected) if expected.is_a?(String)
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamp, 'Etc/UTC')"
     assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamptz, 'Etc/UTC')"
-    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamp, 'Etc/UTC')"
-    assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamptz, 'Etc/UTC')"
+    if period
+      assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamp, 'Etc/UTC')"
+      assert_sql expected, "SELECT gd_period('#{function}', '#{time_str}'::timestamptz, 'Etc/UTC')"
+    end
   end
 
   def assert_sql(expected, sql)
