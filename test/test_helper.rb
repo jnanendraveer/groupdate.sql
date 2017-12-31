@@ -9,31 +9,31 @@ module TestGroupdate
   # second
 
   def test_gd_second_end_of_second
-    assert_result_time :gd_second, "2013-05-03 00:00:00 UTC", "2013-05-03 00:00:00.999"
+    assert_time2 :second, "2013-05-03 00:00:00 UTC", "2013-05-03 00:00:00.999"
   end
 
   def test_gd_second_start_of_second
-    assert_result_time :gd_second, "2013-05-03 00:00:01 UTC", "2013-05-03 00:00:01.000"
+    assert_time2 :second, "2013-05-03 00:00:01 UTC", "2013-05-03 00:00:01.000"
   end
 
   # minute
 
   def test_gd_minute_end_of_minute
-    assert_result_time :gd_minute, "2013-05-03 00:00:00 UTC", "2013-05-03 00:00:59"
+    assert_time2 :minute, "2013-05-03 00:00:00 UTC", "2013-05-03 00:00:59"
   end
 
   def test_gd_minute_start_of_minute
-    assert_result_time :gd_minute, "2013-05-03 00:01:00 UTC", "2013-05-03 00:01:00"
+    assert_time2 :minute, "2013-05-03 00:01:00 UTC", "2013-05-03 00:01:00"
   end
 
   # hour
 
   def test_gd_hour_end_of_hour
-    assert_result_time :gd_hour, "2013-05-03 00:00:00 UTC", "2013-05-03 00:59:59"
+    assert_time2 :hour, "2013-05-03 00:00:00 UTC", "2013-05-03 00:59:59"
   end
 
   def test_gd_hour_start_of_hour
-    assert_result_time :gd_hour, "2013-05-03 01:00:00 UTC", "2013-05-03 01:00:00"
+    assert_time2 :hour, "2013-05-03 01:00:00 UTC", "2013-05-03 01:00:00"
   end
 
   # day
@@ -174,8 +174,10 @@ module TestGroupdate
 
   # helpers
 
-  def assert_result_time(function, expected_str, time_str, time_zone = false)
-    assert_result function, Time.parse(expected_str), time_str, time_zone
+  def assert_time2(function, expected, time_str)
+    expected = Time.parse(expected)
+    assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamp)"
+    assert_sql expected, "SELECT gd_#{function}('#{time_str}'::timestamptz)"
   end
 
   def assert_date(function, expected, time_str)
